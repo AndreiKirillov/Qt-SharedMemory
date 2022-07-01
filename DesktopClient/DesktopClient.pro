@@ -18,10 +18,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 INCLUDEPATH += /home/andrei/boostLib/boost_1_79_0
 
 SOURCES += \
+    EventInterprocess.cpp \
+    MyProcess.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    EventInterprocess.h \
+    MyProcess.h \
     mainwindow.h
 
 FORMS += \

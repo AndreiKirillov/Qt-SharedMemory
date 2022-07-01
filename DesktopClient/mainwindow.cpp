@@ -2,12 +2,14 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 
+
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), _child()
+    , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    _process = std::make_unique<QProcess>(this);
+    _child_process = std::make_unique<MyProcess>();
 
 }
 
@@ -18,23 +20,20 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_start_btn_clicked()
 {
-    if(_process->state() == QProcess::NotRunning)
+    if(_child_process->state() == QProcess::NotRunning)
     {
-        _process->start("gnome-terminal -e ./Child");
+        _child_process->start("./Child");
     }
-    //_child =  std::make_unique<boost::process::child>("./Child");
+    //else
+        //EventInterprocess::sendEvent(_process, EventType::start);
 }
 
 void MainWindow::on_stop_btn_clicked()
 {
-    //_child->terminate();
-    //if(!_child->running())
-        //qDebug() << "Process is closed";
-
-    if(_process->state() == QProcess::Running)
+    if(_child_process->state() == QProcess::Running)
     {
-        _process->close();
-        if(_process->state() == QProcess::NotRunning)
+        _child_process->close();
+        if(_child_process->state() == QProcess::NotRunning)
         {
             qDebug() << "Process is closed";
         }

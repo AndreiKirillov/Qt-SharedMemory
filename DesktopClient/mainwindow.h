@@ -2,9 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
 #include <QProcess>
 #include <memory>
-#include <boost/process.hpp>
+
+#include "MyProcess.h"
+#include "EventInterprocess.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -25,8 +28,9 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    std::unique_ptr<QProcess> _process;
-    std::unique_ptr<boost::process::child> _child;
+    std::unique_ptr<MyProcess> _child_process;
 
 };
+
+
 #endif // MAINWINDOW_H
