@@ -1,6 +1,6 @@
 #include "MyProcess.h"
 
-MyProcess::MyProcess()
+MyProcess::MyProcess():_events_handler()
 {
     _process = std::make_unique<QProcess>();
 }
@@ -29,4 +29,15 @@ void MyProcess::close()
 QProcess::ProcessState MyProcess::state()
 {
     return _process->state();
+}
+
+void MyProcess::read()
+{
+    auto data = _process->readAllStandardOutput();
+    qDebug() << data;
+}
+
+void MyProcess::sendEvent(EventType event)
+{
+    _events_handler.sendEvent(event);
 }

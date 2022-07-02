@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
-
+#include <thread>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -24,8 +24,9 @@ void MainWindow::on_start_btn_clicked()
     {
         _child_process->start("./Child");
     }
-    //else
-        //EventInterprocess::sendEvent(_process, EventType::start);
+    else
+        if(_child_process->state() == QProcess::Running)
+            _child_process->sendEvent(EventType::start);
 }
 
 void MainWindow::on_stop_btn_clicked()
@@ -41,4 +42,9 @@ void MainWindow::on_stop_btn_clicked()
     else
         qDebug() << "Process is NOT running";
 
+}
+
+void MainWindow::on_message_btn_clicked()
+{
+    _child_process->read();
 }

@@ -3,24 +3,32 @@
 
 #include <QProcess>
 #include <string>
-#include <memory>
-#include <boost/interprocess/sync/named_condition_any.hpp>
+#include <mutex>
+#include <boost/interprocess/sync/named_condition.hpp>
 #include <boost/interprocess/sync/named_mutex.hpp>
+#include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/interprocess/creation_tags.hpp>
 
 enum class EventType
 {
-    start,stop, receive_message
+    start,stop, message
 };
 
 
 class EventInterprocess
 {
 private:
-    static std::string convertEventToString(EventType event);
-public:
+    boost::interprocess::named_mutex _interprocess_mtx;
 
-    static bool sendEvent(std::unique_ptr<QProcess>& process, EventType event);
+    boost::interprocess::named_condition _start_event;
+    boost::interprocess::named_condition _stop_event;
+    boost::interprocess::named_condition _message_event;
+
+public:
+    EventInterprocess();
+    ~EventInterprocess();
+
+    void sendEvent(EventType event);
 
 };
 

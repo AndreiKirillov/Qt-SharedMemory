@@ -26,6 +26,8 @@ private slots:
 
     void on_stop_btn_clicked();
 
+    void on_message_btn_clicked();
+
 private:
     Ui::MainWindow *ui;
     std::unique_ptr<MyProcess> _child_process;

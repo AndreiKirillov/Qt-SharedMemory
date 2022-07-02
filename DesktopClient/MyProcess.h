@@ -2,8 +2,11 @@
 #define MYPROCESS_H
 
 #include <QProcess>
+#include <QDebug>
 #include <string>
 #include <memory>
+#include <thread>
+#include <chrono>
 #include <boost/interprocess/sync/named_condition_any.hpp>
 #include <boost/interprocess/sync/named_mutex.hpp>
 #include <boost/interprocess/creation_tags.hpp>
@@ -25,10 +28,11 @@ public:
     MyProcess();
 
     bool start(const QString& name);
-
     void close();
-
     QProcess::ProcessState state();
+    void read();
+
+    void sendEvent(EventType event);
 };
 
 #endif // MYPROCESS_H
