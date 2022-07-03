@@ -8,6 +8,7 @@
 #include <boost/interprocess/sync/named_mutex.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/interprocess/creation_tags.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 enum class EventType
 {
@@ -24,11 +25,14 @@ private:
     boost::interprocess::named_condition _stop_event;
     boost::interprocess::named_condition _message_event;
 
+    boost::interprocess::named_condition _confirm_event;
 public:
     EventInterprocess();
     ~EventInterprocess();
 
     void sendEvent(EventType event);
+
+    bool waitForConfirm();
 
 };
 

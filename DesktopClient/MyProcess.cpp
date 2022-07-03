@@ -37,7 +37,9 @@ void MyProcess::read()
     qDebug() << data;
 }
 
-void MyProcess::sendEvent(EventType event)
+bool MyProcess::sendEvent(EventType event)
 {
     _events_handler.sendEvent(event);
+
+    return _events_handler.waitForConfirm();
 }

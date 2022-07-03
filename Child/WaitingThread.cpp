@@ -3,6 +3,8 @@
 using namespace boost::interprocess;
 named_mutex WaitingThread::mutex_for_1_operation = named_mutex(open_only_t(), "interprocess_mtx");
 
+named_condition WaitingThread::_confirm = named_condition(open_only_t(), "confirm_event");
+
 // В конструкторе получаем именованное событие
 WaitingThread::WaitingThread(const char* condition_name, std::function<void()>&& func):
     _condition_to_wait(open_only_t(), condition_name),
@@ -16,6 +18,18 @@ WaitingThread::WaitingThread(const char* condition_name, std::function<void()>&&
             scoped_lock operation_lock(mutex_for_1_operation);
             _condition_to_wait.wait(operation_lock);           // ждём событие
             _func_after_condition();                           // действие в ответ на событие
+            sendConfirm();
         }
     });
+}
+
+WaitingThread::~WaitingThread()
+{
+    if(_thread.joinable())
+        _thread.detach();
+}
+
+void WaitingThread::sendConfirm()
+{
+    _confirm.notify_one();
 }

@@ -32,7 +32,7 @@ public:
     QProcess::ProcessState state();
     void read();
 
-    void sendEvent(EventType event);
+    bool sendEvent(EventType event);
 };
 
 #endif // MYPROCESS_H

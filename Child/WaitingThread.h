@@ -13,16 +13,22 @@ class WaitingThread
 private:
     std::thread _thread;  // поток для ожидания события
 
-    static boost::interprocess::named_mutex mutex_for_1_operation;
+    static named_mutex mutex_for_1_operation;
 
-    boost::interprocess::named_condition _condition_to_wait;
+    static named_condition _confirm;
+
+    named_condition _condition_to_wait;
 
     std::function<void()> _func_after_condition;
+
+    void sendConfirm();
 public:
     //WaitingThread();
 
     // В конструкторе получаем именованное событие
     WaitingThread(const char* condition_name, std::function<void()>&& func);
+
+    ~WaitingThread();
 
 };
 

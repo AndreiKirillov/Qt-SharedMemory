@@ -26,7 +26,12 @@ void MainWindow::on_start_btn_clicked()
     }
     else
         if(_child_process->state() == QProcess::Running)
-            _child_process->sendEvent(EventType::start);
+        {
+            if(_child_process->sendEvent(EventType::start))
+                QMessageBox::about(this, "Внимание", "Событие отправилось");
+            else
+                QMessageBox::about(this, "Внимание", "Не удалось выполнить");
+        }
 }
 
 void MainWindow::on_stop_btn_clicked()
