@@ -1,6 +1,9 @@
 #include <QCoreApplication>
+#include <QSharedMemory>
+#include <QSystemSemaphore>
 #include <iostream>
 #include <string>
+#include <vector>
 #include <mutex>
 #include <memory>
 #include <boost/interprocess/sync/named_condition.hpp>
@@ -29,13 +32,37 @@ void stop()
 }
 
 LibSharedMemory shared_mem;
-
+QSharedMemory shared_memory("MyMemoryKey");
+QSystemSemaphore shared_mem_blocker("MySemaphoreKey",1);
 void message()
 {
-    std::string received_message = shared_mem.readFromSharedMem();
+    shared_mem_blocker.acquire();
 
-    if(received_message != "")
-        std::cout << "Message was received: " << received_message << std::endl;
+    if(!shared_memory.attach(QSharedMemory::AccessMode::ReadOnly)) // присоединяемся к памяти
+    {
+        shared_mem_blocker.release();
+        std::cout << "Error attaching to shared memory" << std::endl;
+        return;
+    }
+
+    int message_size;
+    memcpy(&message_size, shared_memory.data(), sizeof(int));  // читаем размер сообщения
+
+    std::vector <char> v(message_size);
+    memcpy(&v[0], shared_memory.data() + sizeof(int), message_size);
+    std::string s(&v[0], message_size);
+
+
+    const char* message_buff = new char[message_size];
+    memcpy(&message_buff, shared_memory.data() + sizeof(int), message_size);      // затем само сообщение
+    std::string str_message(message_buff);
+    delete[] message_buff;
+
+    shared_memory.detach();                // отключаем процесс от памяти
+    shared_mem_blocker.release();
+
+    if(str_message != "")
+        std::cout << "Message was received: " << str_message << std::endl;
     else
         std::cout << "FAIL in receiving message" << std::endl;
 }

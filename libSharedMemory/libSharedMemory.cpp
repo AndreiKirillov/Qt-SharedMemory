@@ -9,7 +9,7 @@ bool LibSharedMemory::writeToSharedMem(const char *message)
 {
     _semaphore.acquire();      // синхронизируем доступ
 
-    if(!_shared_memory.create(strlen(message) + sizeof(int))) // Создаём сегмент памяти нужного размера
+    if(!_shared_memory.create(strlen(message) + sizeof(int) + 1)) // Создаём сегмент памяти нужного размера
     {
         _semaphore.release();
         return false;
@@ -21,7 +21,7 @@ bool LibSharedMemory::writeToSharedMem(const char *message)
         return false;
     }
 
-    int message_size = strlen(message);
+    int message_size = strlen(message) + 1;
 
     memcpy(_shared_memory.data(), &message_size, sizeof(int));
     memcpy(_shared_memory.data() + sizeof(int), message, message_size);
@@ -30,7 +30,7 @@ bool LibSharedMemory::writeToSharedMem(const char *message)
     return true;
 }
 
-const char* LibSharedMemory::readFromSharedMem()
+std::string LibSharedMemory::readFromSharedMem()
 {
     _semaphore.acquire();
 
@@ -41,15 +41,22 @@ const char* LibSharedMemory::readFromSharedMem()
     }
 
     int message_size;
-    std::string message;
-
     memcpy(&message_size, _shared_memory.data(), sizeof(int));  // читаем размер сообщения
+
+    const char* message = new char[message_size];
     memcpy(&message, _shared_memory.data() + sizeof(int), message_size);      // затем само сообщение
+    std::string str_message(message);
+    delete[] message;
 
     _shared_memory.detach();                // отключаем процесс от памяти
     _semaphore.release();
 
-    return message.c_str();
+    return message;
+}
+
+bool LibSharedMemory::detachMemory()
+{
+    return _shared_memory.detach();
 }
 
 

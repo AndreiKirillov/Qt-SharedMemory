@@ -29,6 +29,7 @@ private:
     LibSharedMemory _shared_memory;
 public:
     MyProcess();
+    ~MyProcess();
 
     bool start(const QString& name);
     void close();
@@ -36,7 +37,7 @@ public:
     void read();
 
     bool sendEvent(EventType event);
-    bool sendMessage(const char* message);
+    bool sendMessage(std::string message);
 };
 
 #endif // MYPROCESS_H

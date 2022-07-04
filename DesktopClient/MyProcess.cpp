@@ -5,6 +5,11 @@ MyProcess::MyProcess():_events_handler(), _shared_memory()
     _process = std::make_unique<QProcess>();
 }
 
+MyProcess::~MyProcess()
+{
+    _shared_memory.detachMemory();
+}
+
 bool MyProcess::start(const QString &name)
 {
     if(_process->state() == QProcess::NotRunning)
@@ -44,7 +49,7 @@ bool MyProcess::sendEvent(EventType event)
     return _events_handler.waitForConfirm();
 }
 
-bool MyProcess::sendMessage(const char* message)
+bool MyProcess::sendMessage(std::string message)
 {
-    return _shared_memory.writeToSharedMem(message);
+    return _shared_memory.writeToSharedMem(message.c_str());
 }

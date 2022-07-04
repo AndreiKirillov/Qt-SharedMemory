@@ -16,8 +16,9 @@ public:
 
     bool writeToSharedMem(const char* message);
 
-    const char* readFromSharedMem();
+    std::string readFromSharedMem();
 
+    bool detachMemory();
 };
 
 #endif // LIBSHAREDMEMORY_H
