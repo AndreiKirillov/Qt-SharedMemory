@@ -40,7 +40,7 @@
      <string>Stop</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="message_btn">
+   <widget class="QPushButton" name="read_btn">
     <property name="geometry">
      <rect>
       <x>40</x>

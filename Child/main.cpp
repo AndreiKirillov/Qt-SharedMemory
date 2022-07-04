@@ -1,5 +1,6 @@
 #include <QCoreApplication>
 #include <iostream>
+#include <string>
 #include <mutex>
 #include <memory>
 #include <boost/interprocess/sync/named_condition.hpp>
@@ -27,22 +28,21 @@ void stop()
     std::cout<<"stop function FINISHED"<<std::endl;
 }
 
+LibSharedMemory shared_mem;
+
 void message()
 {
-    std::cout<<"message function"<<std::endl;
-    for(int i=0;i<10;i++)
-        std::cout<<"work imitation"<<std::endl;
-    std::cout<<"message function FINISHED"<<std::endl;
+    std::string received_message = shared_mem.readFromSharedMem();
+
+    if(received_message != "")
+        std::cout << "Message was received: " << received_message << std::endl;
+    else
+        std::cout << "FAIL in receiving message" << std::endl;
 }
 
 int main(int argc, char *argv[])
 {
     std::cout << "Child started" << std::endl;
-
-    // Разные события
-    //named_condition start_condition(boost::interprocess::open_only_t(), "start_event");
-    //named_condition stop_condition(boost::interprocess::open_only_t(), "stop_event");
-    //named_condition message_condition(boost::interprocess::open_only_t(), "message_event");
 
     // Потоки, ожидающие разные события и выполняющие нужные функции после их наступления
     WaitingThread wait_for_start("start_event", start);
@@ -53,12 +53,6 @@ int main(int argc, char *argv[])
     {
 
     }
-
-    //named_mutex interprocess_mtx(open_only_t(), "interprocess_mtx");
-    //named_condition event(open_only_t(), "start_event");
-
-    //boost::interprocess::scoped_lock lck(interprocess_mtx);
-    //event.wait(lck);
 
     std::cout << "Event was received" << std::endl;
 

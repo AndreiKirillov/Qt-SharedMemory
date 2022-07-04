@@ -49,7 +49,7 @@ void MainWindow::on_stop_btn_clicked()
 
 }
 
-void MainWindow::on_message_btn_clicked() // чтение cout дочернего процесса
+void MainWindow::on_read_btn_clicked() // чтение cout дочернего процесса
 {
     _child_process->read();
 }
@@ -57,5 +57,13 @@ void MainWindow::on_message_btn_clicked() // чтение cout дочернег�
 void MainWindow::on_send_btn_clicked()   // отправка сообщения через разделяемую память
 {
     if(_child_process->sendMessage("test message to shared memory"))
-        _child_process->sendEvent(EventType::message);
+    {
+        if(_child_process->sendEvent(EventType::message))
+            QMessageBox::about(this, "Внимание", "Дочерний процесс прочитал сообщение в разделяемой памяти");
+        else
+            QMessageBox::about(this, "Внимание", "Дочерний процесс НЕ смог прочитать сообщение");
+    }
+    else
+        QMessageBox::about(this, "Внимание", "Не удалось записать сообщение в разделяемую память");
 }
+

@@ -28,9 +28,9 @@ private slots:
 
     void on_stop_btn_clicked();
 
-    void on_message_btn_clicked();
-
     void on_send_btn_clicked();
+
+    void on_read_btn_clicked();
 
 private:
     Ui::MainWindow *ui;

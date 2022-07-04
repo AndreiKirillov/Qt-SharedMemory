@@ -9,22 +9,22 @@ bool LibSharedMemory::writeToSharedMem(const char *message)
 {
     _semaphore.acquire();      // синхронизируем доступ
 
-    if(!_shared_memory.create(strlen(message))) // Создаём сегмент памяти нужного размера
+    if(!_shared_memory.create(strlen(message) - 1 + sizeof(int))) // Создаём сегмент памяти нужного размера
     {
         _semaphore.release();
         return false;
     }
 
-    if(!_shared_memory.attach()) // присоединяемся к памяти
+    if(!_shared_memory.isAttached()) // присоединяемся к памяти
     {
         _semaphore.release();
         return false;
     }
 
-    int message_size = strlen(message);
+    int message_size = strlen(message)-1;
 
     memcpy(_shared_memory.data(), &message_size, sizeof(int));
-    memcpy(_shared_memory.data(), message, strlen(message));
+    memcpy(_shared_memory.data(), message, message_size);
 
     _semaphore.release();
     return true;
