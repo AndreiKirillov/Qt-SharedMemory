@@ -8,16 +8,17 @@
 
 using namespace boost::interprocess;
 
+// Ожидающий поток ждет какое-то событие и совершает действие, дождавшись
 class WaitingThread
 {
 private:
     std::thread _thread;  // поток для ожидания события
 
-    static named_mutex mutex_for_1_operation;
+    static named_mutex mutex_for_1_operation; // статический мьютекс защищает от выполнения нескольких задач от родительского
+                                                                                                              //процесса
+    static named_condition _confirm;     // посылает подтверждение родительскому процессу
 
-    static named_condition _confirm;
-
-    named_condition _condition_to_wait;
+    named_condition _condition_to_wait;  // ожидаемое событие
 
     std::function<void()> _func_after_condition;
 
@@ -25,7 +26,7 @@ private:
 public:
     //WaitingThread();
 
-    // В конструкторе получаем именованное событие
+    // В конструкторе получаем именованное событие, raii style
     WaitingThread(const char* condition_name, std::function<void()>&& func);
 
     ~WaitingThread();

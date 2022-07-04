@@ -8,6 +8,7 @@
 #include <boost/interprocess/creation_tags.hpp>
 
 #include "WaitingThread.h"
+#include "libSharedMemory.h"
 using namespace boost::interprocess;
 
 void start()

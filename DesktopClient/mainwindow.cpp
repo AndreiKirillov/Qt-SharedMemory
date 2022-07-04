@@ -49,7 +49,13 @@ void MainWindow::on_stop_btn_clicked()
 
 }
 
-void MainWindow::on_message_btn_clicked()
+void MainWindow::on_message_btn_clicked() // чтение cout дочернего процесса
 {
     _child_process->read();
+}
+
+void MainWindow::on_send_btn_clicked()   // отправка сообщения через разделяемую память
+{
+    if(_child_process->sendMessage("test message to shared memory"))
+        _child_process->sendEvent(EventType::message);
 }

@@ -27,3 +27,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     WaitingThread.h
+
+unix:!macx: LIBS += -L$$PWD/../build-libSharedMemory-Desktop_Qt_5_14_2_GCC_64bit-Debug/ -llibSharedMemory
+
+INCLUDEPATH += $$PWD/../libSharedMemory
+DEPENDPATH += $$PWD/../libSharedMemory

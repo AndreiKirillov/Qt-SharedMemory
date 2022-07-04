@@ -12,6 +12,7 @@
 #include <boost/interprocess/creation_tags.hpp>
 
 #include "EventInterprocess.h"
+#include "libSharedMemory.h"     // созданная библиотека для разделяемой памяти
 
 class MyProcess// : private QObject
 {
@@ -24,6 +25,8 @@ private:
     //средства для отправки событий процессу
     EventInterprocess _events_handler;
 
+    // для работы с разделяемой памятью
+    LibSharedMemory _shared_memory;
 public:
     MyProcess();
 
@@ -33,6 +36,7 @@ public:
     void read();
 
     bool sendEvent(EventType event);
+    bool sendMessage(const char* message);
 };
 
 #endif // MYPROCESS_H

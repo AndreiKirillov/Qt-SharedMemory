@@ -1,6 +1,6 @@
 #include "MyProcess.h"
 
-MyProcess::MyProcess():_events_handler()
+MyProcess::MyProcess():_events_handler(), _shared_memory()
 {
     _process = std::make_unique<QProcess>();
 }
@@ -42,4 +42,9 @@ bool MyProcess::sendEvent(EventType event)
     _events_handler.sendEvent(event);
 
     return _events_handler.waitForConfirm();
+}
+
+bool MyProcess::sendMessage(const char* message)
+{
+    return _shared_memory.writeToSharedMem(message);
 }

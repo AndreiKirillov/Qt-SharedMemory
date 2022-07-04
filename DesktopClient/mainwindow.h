@@ -9,6 +9,8 @@
 #include "MyProcess.h"
 #include "EventInterprocess.h"
 
+#include <libSharedMemory.h>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -27,6 +29,8 @@ private slots:
     void on_stop_btn_clicked();
 
     void on_message_btn_clicked();
+
+    void on_send_btn_clicked();
 
 private:
     Ui::MainWindow *ui;
