@@ -23,12 +23,15 @@ class MyEvent
 {
 private:
     std::unique_ptr<QSystemSemaphore> _event;
+    std::string _event_name;
 
-    std::unique_ptr<QSharedMemory> _memory_guard;
+    std::unique_ptr<QSharedMemory> _memory_open_create_guard;
+    std::unique_ptr<QSharedMemory> _memory_false_signal_guard;
 
     WorkingMode _working_mode;
 
     StatusError translateError(QSystemSemaphore::SystemSemaphoreError error_code);
+    bool checkIfSenderExists();
 public:
     MyEvent(const char* event_name, WorkingMode working_mode);
     ~MyEvent();
