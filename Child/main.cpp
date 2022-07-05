@@ -6,14 +6,9 @@
 #include <vector>
 #include <mutex>
 #include <memory>
-#include <boost/interprocess/sync/named_condition.hpp>
-#include <boost/interprocess/sync/named_mutex.hpp>
-#include <boost/interprocess/sync/scoped_lock.hpp>
-#include <boost/interprocess/creation_tags.hpp>
 
 #include "WaitingThread.h"
 #include "libSharedMemory.h"
-using namespace boost::interprocess;
 
 void start()
 {

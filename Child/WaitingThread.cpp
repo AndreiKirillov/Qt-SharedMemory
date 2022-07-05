@@ -1,23 +1,18 @@
 #include "WaitingThread.h"
 
-using namespace boost::interprocess;
-named_mutex WaitingThread::mutex_for_1_operation = named_mutex(open_only_t(), "interprocess_mtx");
-
-named_condition WaitingThread::_confirm = named_condition(open_only_t(), "confirm_event");
+MyEvent WaitingThread::_confirm_event = MyEvent("confirm_event", WorkingMode::Sender);
 
 // В конструкторе получаем именованное событие
 WaitingThread::WaitingThread(const char* condition_name, std::function<void()>&& func):
-    _condition_to_wait(open_only_t(), condition_name),
-    _func_after_condition(std::move(func))
+    _event_to_wait(condition_name, WorkingMode::Receiver),
+    _func_after_event(std::move(func))
 {
     // Запускаем поток, котором будем ожидать событие и затем выполнять func
-    // при этом программа не будет одновременно выполнять func двух разных waitingThread
     _thread = std::thread([&](){
         while(true)
         {
-            scoped_lock operation_lock(mutex_for_1_operation);
-            _condition_to_wait.wait(operation_lock);           // ждём событие
-            _func_after_condition();                           // действие в ответ на событие
+            _event_to_wait.wait();
+            _func_after_event();                           // действие в ответ на событие
             sendConfirm();
         }
     });
@@ -31,5 +26,5 @@ WaitingThread::~WaitingThread()
 
 void WaitingThread::sendConfirm()
 {
-    _confirm.notify_one();
+    _confirm_event.set();
 }

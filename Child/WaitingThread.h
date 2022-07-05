@@ -2,12 +2,8 @@
 #define WAITINGTHREAD_H
 #include <thread>
 #include <functional>
-#include <boost/interprocess/sync/named_condition.hpp>
-#include <boost/interprocess/sync/named_mutex.hpp>
-#include <boost/interprocess/sync/scoped_lock.hpp>
-#include "libSharedMemory.h"
 
-using namespace boost::interprocess;
+#include "MyEvent.h"
 
 // Ожидающий поток ждет какое-то событие и совершает действие, дождавшись
 class WaitingThread
@@ -15,13 +11,11 @@ class WaitingThread
 private:
     std::thread _thread;  // поток для ожидания события
 
-    static named_mutex mutex_for_1_operation; // статический мьютекс защищает от выполнения нескольких задач от родительского
-                                                                                                              //процесса
-    static named_condition _confirm;     // посылает подтверждение родительскому процессу
+    MyEvent _event_to_wait;  // ожидаемое событие
 
-    named_condition _condition_to_wait;  // ожидаемое событие
+    static MyEvent _confirm_event;  // будет посылать подтверждение родительскому процессу
 
-    std::function<void()> _func_after_condition;
+    std::function<void()> _func_after_event; // в ответ на наступление события
 
     void sendConfirm();
 public:

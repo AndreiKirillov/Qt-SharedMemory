@@ -28,7 +28,8 @@ StatusError MyEvent::translateError(QSystemSemaphore::SystemSemaphoreError error
     }
 }
 
-MyEvent::MyEvent(const char* event_name, ResetMode mode):_mode(mode)
+MyEvent::MyEvent(const char *event_name, WorkingMode working_mode):
+    _working_mode(working_mode)
 {
     std::string memory_name = event_name;   // имя-ключ для защитной памяти
     memory_name += "_memory";               // составляется из имени события
@@ -41,24 +42,32 @@ MyEvent::MyEvent(const char* event_name, ResetMode mode):_mode(mode)
     if (_memory_guard->attach())   // Если присоединимся к памяти, значит семафор уже создан
     {
         _event = std::make_unique<QSystemSemaphore>(event_name, 1, QSystemSemaphore::AccessMode::Open);
+        if(_working_mode == WorkingMode::Sender)
+        {
+            _event->acquire();
+        }
+        // если тип - приёмник, то
+        // семафор-отправитель уже был создан, ничего не делаем
     }
     else
     {
         _memory_guard->create(1);     // создаем защитную память и сам семафор
         _event = std::make_unique<QSystemSemaphore>(event_name, 1, QSystemSemaphore::AccessMode::Create);
-        _event->acquire();  // Захватываем семафор
+        if(_working_mode == WorkingMode::Sender)
+        {
+            _event->acquire();  // Захватываем семафор
+        }
     }
 }
 
 MyEvent::~MyEvent()
 {
-    _memory_guard->detach();
-    //_event->release();
+    //_event->release();   проблема, что при уничтожении ресурс освободится и будет ложное срабатывание приемника
 }
 
 StatusError MyEvent::set()       // отправка события
 {
-    if(_mode == ResetMode::Auto)
+    if(_working_mode == WorkingMode::Sender)
     {
         if(_event->release())   // освобождаем семафор, давая ждущему процессу его захватить
         {
@@ -73,34 +82,23 @@ StatusError MyEvent::set()       // отправка события
         }
     }
     else
-    {
-        if(_event->release())  // при ручном сбросе просто освобождаем семафор
-            return StatusError::NoError;
-        else
-            return translateError(_event->error());
-    }
-}
-
-StatusError MyEvent::reset()   // нужна только при ручном типе сброса
-{
-    if(_mode == ResetMode::Manual)
-    {
-        if(_event->acquire())
-            return StatusError::NoError;
-        else
-            return translateError(_event->error());
-    }
+        return StatusError::PermissionDenied;
 }
 
 StatusError MyEvent::wait()    // Ожидает наступление события
 {
-    if(_event->acquire())    // пытаемся получить ресурс
+    if(_working_mode == WorkingMode::Receiver)   // только для типа получатель
     {
-        if(_event->release())  // получение ресурса - наступление события, затем освобождаем
-            return StatusError::NoError;
+        if(_event->acquire())    // пытаемся получить ресурс
+        {
+            if(_event->release())  // получение ресурса - это наступление события, затем освобождаем
+                return StatusError::NoError;
+            else
+                return translateError(_event->error());
+        }
         else
             return translateError(_event->error());
     }
     else
-        return translateError(_event->error());
+        return StatusError::PermissionDenied;
 }

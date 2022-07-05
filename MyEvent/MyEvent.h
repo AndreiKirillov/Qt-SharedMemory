@@ -6,9 +6,9 @@
 #include <string>
 #include <memory>
 
-enum class ResetMode
-{
-    Manual, Auto
+enum class WorkingMode  // пока либо отправитель, либо приёмник, в двустороннем режиме чёт сложно сделать
+{                       // вдобавок отправитель может быть в единственном экземпляре, да и приёмник тоже
+    Sender, Receiver
 };
 
 enum class StatusError     // Типы возможных ошибок семафора
@@ -24,16 +24,16 @@ private:
 
     std::unique_ptr<QSharedMemory> _memory_guard;
 
-    ResetMode _mode;
+    WorkingMode _working_mode;
+
+    bool _is_acquired;
 
     StatusError translateError(QSystemSemaphore::SystemSemaphoreError error_code);
 public:
-    MyEvent(const char* event_name, ResetMode mode = ResetMode::Auto);
+    MyEvent(const char* event_name, WorkingMode working_mode);
     ~MyEvent();
 
     StatusError set();
-
-    StatusError reset();
 
     StatusError wait();
 };

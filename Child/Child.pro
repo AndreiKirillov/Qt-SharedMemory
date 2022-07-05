@@ -14,8 +14,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-INCLUDEPATH += /home/andrei/boostLib/boost_1_79_0
-
 SOURCES += \
         WaitingThread.cpp \
         main.cpp
@@ -32,3 +30,10 @@ unix:!macx: LIBS += -L$$PWD/../build-libSharedMemory-Desktop_Qt_5_14_2_GCC_64bit
 
 INCLUDEPATH += $$PWD/../libSharedMemory
 DEPENDPATH += $$PWD/../libSharedMemory
+
+unix:!macx: LIBS += -L$$PWD/../build-MyEvent-Desktop_Qt_5_14_2_GCC_64bit-Debug/ -lMyEvent
+
+INCLUDEPATH += $$PWD/../MyEvent
+DEPENDPATH += $$PWD/../MyEvent
+
+unix:!macx: PRE_TARGETDEPS += $$PWD/../build-MyEvent-Desktop_Qt_5_14_2_GCC_64bit-Debug/libMyEvent.a

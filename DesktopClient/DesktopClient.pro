@@ -40,3 +40,10 @@ unix:!macx: LIBS += -L$$PWD/../build-libSharedMemory-Desktop_Qt_5_14_2_GCC_64bit
 
 INCLUDEPATH += $$PWD/../libSharedMemory
 DEPENDPATH += $$PWD/../libSharedMemory
+
+unix:!macx: LIBS += -L$$PWD/../build-MyEvent-Desktop_Qt_5_14_2_GCC_64bit-Debug/ -lMyEvent
+
+INCLUDEPATH += $$PWD/../MyEvent
+DEPENDPATH += $$PWD/../MyEvent
+
+unix:!macx: PRE_TARGETDEPS += $$PWD/../build-MyEvent-Desktop_Qt_5_14_2_GCC_64bit-Debug/libMyEvent.a
