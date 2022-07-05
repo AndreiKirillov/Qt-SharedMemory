@@ -37,3 +37,10 @@ INCLUDEPATH += $$PWD/../MyEvent
 DEPENDPATH += $$PWD/../MyEvent
 
 unix:!macx: PRE_TARGETDEPS += $$PWD/../build-MyEvent-Desktop_Qt_5_14_2_GCC_64bit-Debug/libMyEvent.a
+
+unix:!macx: LIBS += -L$$PWD/../build-MyEventSpecial-Desktop_Qt_5_14_2_GCC_64bit-Debug/ -lMyEventSpecial
+
+INCLUDEPATH += $$PWD/../MyEventSpecial
+DEPENDPATH += $$PWD/../MyEventSpecial
+
+unix:!macx: PRE_TARGETDEPS += $$PWD/../build-MyEventSpecial-Desktop_Qt_5_14_2_GCC_64bit-Debug/libMyEventSpecial.a

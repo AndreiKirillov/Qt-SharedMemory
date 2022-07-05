@@ -3,7 +3,8 @@
 #include <thread>
 #include <functional>
 
-#include "MyEvent.h"
+//#include "MyEvent.h"
+#include "MyEventSpecial.h"
 
 // Ожидающий поток ждет какое-то событие и совершает действие, дождавшись
 class WaitingThread
@@ -11,9 +12,9 @@ class WaitingThread
 private:
     std::thread _thread;  // поток для ожидания события
 
-    MyEvent _event_to_wait;  // ожидаемое событие
+    MyEventSpecial _event_to_wait;  // ожидаемое событие
 
-    static MyEvent _confirm_event;  // будет посылать подтверждение родительскому процессу
+    //static MyEvent _confirm_event;  // будет посылать подтверждение родительскому процессу
 
     std::function<void()> _func_after_event; // в ответ на наступление события
 
