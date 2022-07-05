@@ -44,7 +44,7 @@ MyEvent::MyEvent(const char *event_name, WorkingMode working_mode):
         _event = std::make_unique<QSystemSemaphore>(event_name, 1, QSystemSemaphore::AccessMode::Open);
         if(_working_mode == WorkingMode::Sender)
         {
-            _event->acquire();
+            //_event->acquire(); нельзя подавать сигнал, ожидающий процесс сработает
         }
         // если тип - приёмник, то
         // семафор-отправитель уже был создан, ничего не делаем
@@ -62,7 +62,7 @@ MyEvent::MyEvent(const char *event_name, WorkingMode working_mode):
 
 MyEvent::~MyEvent()
 {
-    //_event->release();   проблема, что при уничтожении ресурс освободится и будет ложное срабатывание приемника
+    //_event->release();   ??проблема, что при уничтожении ресурс освободится и будет ложное срабатывание приемника
 }
 
 StatusError MyEvent::set()       // отправка события

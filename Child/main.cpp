@@ -8,7 +8,7 @@
 #include <memory>
 
 #include "WaitingThread.h"
-#include "libSharedMemory.h"
+//#include "libSharedMemory.h"
 
 void start()
 {
@@ -26,40 +26,40 @@ void stop()
     std::cout<<"stop function FINISHED"<<std::endl;
 }
 
-LibSharedMemory shared_mem;
-QSharedMemory shared_memory("MyMemoryKey");
-QSystemSemaphore shared_mem_blocker("MySemaphoreKey",1);
+//LibSharedMemory shared_mem;
+//QSharedMemory shared_memory("MyMemoryKey");
+//QSystemSemaphore shared_mem_blocker("MySemaphoreKey",1);
 void message()
 {
-    shared_mem_blocker.acquire();
+//    shared_mem_blocker.acquire();
 
-    if(!shared_memory.attach(QSharedMemory::AccessMode::ReadOnly)) // присоединяемся к памяти
-    {
-        shared_mem_blocker.release();
-        std::cout << "Error attaching to shared memory" << std::endl;
-        return;
-    }
+//    if(!shared_memory.attach(QSharedMemory::AccessMode::ReadOnly)) // присоединяемся к памяти
+//    {
+//        shared_mem_blocker.release();
+//        std::cout << "Error attaching to shared memory" << std::endl;
+//        return;
+//    }
 
-    int message_size;
-    memcpy(&message_size, shared_memory.data(), sizeof(int));  // читаем размер сообщения
+//    int message_size;
+//    memcpy(&message_size, shared_memory.data(), sizeof(int));  // читаем размер сообщения
 
-    std::vector <char> v(message_size);
-    memcpy(&v[0], shared_memory.data() + sizeof(int), message_size);
-    std::string s(&v[0], message_size);
+//    std::vector <char> v(message_size);
+//    memcpy(&v[0], shared_memory.data() + sizeof(int), message_size);
+//    std::string s(&v[0], message_size);
 
 
-    const char* message_buff = new char[message_size];
-    memcpy(&message_buff, shared_memory.data() + sizeof(int), message_size);      // затем само сообщение
-    std::string str_message(message_buff);
-    delete[] message_buff;
+//    const char* message_buff = new char[message_size];
+//    memcpy(&message_buff, shared_memory.data() + sizeof(int), message_size);      // затем само сообщение
+//    std::string str_message(message_buff);
+//    delete[] message_buff;
 
-    shared_memory.detach();                // отключаем процесс от памяти
-    shared_mem_blocker.release();
+//    shared_memory.detach();                // отключаем процесс от памяти
+//    shared_mem_blocker.release();
 
-    if(str_message != "")
-        std::cout << "Message was received: " << str_message << std::endl;
-    else
-        std::cout << "FAIL in receiving message" << std::endl;
+//    if(str_message != "")
+//        std::cout << "Message was received: " << str_message << std::endl;
+//    else
+//        std::cout << "FAIL in receiving message" << std::endl;
 }
 
 int main(int argc, char *argv[])

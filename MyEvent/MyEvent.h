@@ -4,6 +4,8 @@
 #include <QSystemSemaphore>
 #include <QSharedMemory>
 #include <string>
+#include <thread>
+#include <chrono>
 #include <memory>
 
 enum class WorkingMode  // пока либо отправитель, либо приёмник, в двустороннем режиме чёт сложно сделать
@@ -25,8 +27,6 @@ private:
     std::unique_ptr<QSharedMemory> _memory_guard;
 
     WorkingMode _working_mode;
-
-    bool _is_acquired;
 
     StatusError translateError(QSystemSemaphore::SystemSemaphoreError error_code);
 public:
