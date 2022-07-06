@@ -3,35 +3,59 @@
 EventInterprocess::EventInterprocess():
     _start_event("start_event", WorkingMode::Sender),
     _stop_event("stop_event", WorkingMode::Sender),
-    _message_event("message_event", WorkingMode::Sender)
-    //_confirm_event("confirm_event", WorkingMode::Receiver)
+    _message_event("message_event", WorkingMode::Sender),
+    _exit_event("exit_event", WorkingMode::Sender),
+    _confirm_event("confirm_event")
 {
 }
 
-EventInterprocess::~EventInterprocess()
-{
-}
-
-void EventInterprocess::sendEvent(EventType event)
+bool EventInterprocess::sendEvent(EventType event)
 {
     switch(event)
     {
     case EventType::start:
-        _start_event.set();
+    {
+        auto status = _start_event.set();
+        if(status == QSystemSemaphore::NoError)
+            return true;
+        else
+            return false;
+    }
         break;
     case EventType::stop:
-        _stop_event.set();
+    {
+        auto status = _stop_event.set();
+        if(status == QSystemSemaphore::NoError)
+            return true;
+        else
+            return false;
+    }
         break;
     case EventType::message:
-        _message_event.set();
+    {
+        auto status = _message_event.set();
+        if(status == QSystemSemaphore::NoError)
+            return true;
+        else
+            return false;
+    }
+        break;
+    case EventType::exit:
+    {
+        auto status = _exit_event.set();
+        if(status == QSystemSemaphore::NoError)
+            return true;
+        else
+            return false;
+    }
         break;
     }
 }
 
 bool EventInterprocess::waitForConfirm()
 {
-//    if(_confirm_event.wait() == StatusError::NoError)
-//        return true;
-//    else
-//        return false;
+    if(_confirm_event.wait() == QSystemSemaphore::NoError)
+        return true;
+    else
+        return false;
 }

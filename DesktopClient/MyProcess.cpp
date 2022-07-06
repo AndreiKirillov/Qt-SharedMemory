@@ -1,13 +1,13 @@
 #include "MyProcess.h"
 
-MyProcess::MyProcess():_events_handler(), _shared_memory()
+MyProcess::MyProcess():_events_handler(), _shared_memory("MyMemoryKey"),
+    _memory_blocker("MemoryBlockerKey", 1, QSystemSemaphore::Create)
 {
     _process = std::make_unique<QProcess>();
 }
 
 MyProcess::~MyProcess()
 {
-    _shared_memory.detachMemory();
 }
 
 bool MyProcess::start(const QString &name)
@@ -28,7 +28,7 @@ bool MyProcess::start(const QString &name)
 void MyProcess::close()
 {
     if(_process->state() == QProcess::Running || _process->state() == QProcess::Starting)
-        _process->close();
+        _events_handler.sendEvent(EventType::exit);
 }
 
 QProcess::ProcessState MyProcess::state()
@@ -44,12 +44,28 @@ void MyProcess::read()
 
 bool MyProcess::sendEvent(EventType event)
 {
-    _events_handler.sendEvent(event);
-    return true;
-    //return _events_handler.waitForConfirm();
+    if(_events_handler.sendEvent(event))       // посылаем событие
+        return _events_handler.waitForConfirm();   // ждём подтверждение
+    else
+        return false;
 }
 
-bool MyProcess::sendMessage(std::string message)
+bool MyProcess::sendMessage(const QString& message)
 {
-    return _shared_memory.writeToSharedMem(message.c_str());
+    _memory_blocker.acquire(); // синхронизируем доступ к памяти
+
+    if(_shared_memory.create(message.size() + sizeof(int)))
+    {
+        int message_size = message.size();
+        memcpy(_shared_memory.data(),&message_size, sizeof(int));
+        QByteArray message_buff = message.toLocal8Bit();
+        memcpy(_shared_memory.data()+sizeof(int), message_buff.data(),message_size);
+
+        _memory_blocker.release();
+        bool result = sendEvent(EventType::message);
+        _shared_memory.detach();
+        return result;
+    }
+    _memory_blocker.release();
+    return false;
 }

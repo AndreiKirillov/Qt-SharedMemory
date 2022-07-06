@@ -14,7 +14,7 @@ private:
 
     MyEventSpecial _event_to_wait;  // ожидаемое событие
 
-    //static MyEvent _confirm_event;  // будет посылать подтверждение родительскому процессу
+    static MyEventSpecial _confirm_event;  // будет посылать подтверждение родительскому процессу
 
     std::function<void()> _func_after_event; // в ответ на наступление события
 
@@ -24,9 +24,9 @@ public:
 
     // В конструкторе получаем именованное событие, raii style
     WaitingThread(const char* condition_name, std::function<void()>&& func);
-
     ~WaitingThread();
 
+    void stop();
 };
 
 #endif // WAITINGTHREAD_H

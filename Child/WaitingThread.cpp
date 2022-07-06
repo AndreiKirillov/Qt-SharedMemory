@@ -1,6 +1,6 @@
 #include "WaitingThread.h"
 
-//MyEvent WaitingThread::_confirm_event = MyEvent("confirm_event", WorkingMode::Sender);
+MyEventSpecial WaitingThread::_confirm_event = MyEventSpecial("confirm_event", WorkingMode::Sender);
 
 // В конструкторе получаем именованное событие
 WaitingThread::WaitingThread(const char* condition_name, std::function<void()>&& func):
@@ -8,12 +8,12 @@ WaitingThread::WaitingThread(const char* condition_name, std::function<void()>&&
     _func_after_event(std::move(func))
 {
     // Запускаем поток, котором будем ожидать событие и затем выполнять func
-    _thread = std::thread([&](){
+    _thread = std::thread([this](){
         while(true)
         {
             _event_to_wait.wait();
             _func_after_event();   // действие в ответ на событие
-            //sendConfirm();
+            sendConfirm();
         }
     });
 }
@@ -24,7 +24,12 @@ WaitingThread::~WaitingThread()
         _thread.detach();
 }
 
+void WaitingThread::stop()
+{
+    _thread.~thread();
+}
+
 void WaitingThread::sendConfirm()
 {
-    //_confirm_event.set();
+    _confirm_event.set();
 }

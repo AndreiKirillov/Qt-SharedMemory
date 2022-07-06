@@ -58,7 +58,7 @@ void MainWindow::on_send_btn_clicked()   // отправка сообщения 
 {
     //if(_child_process->sendMessage("test message to shared memory"))
     //{
-        if(_child_process->sendEvent(EventType::message))
+        if(_child_process->sendMessage("Test message to shared memory"))
             QMessageBox::about(this, "Внимание", "Дочерний процесс прочитал сообщение в разделяемой памяти");
         else
             QMessageBox::about(this, "Внимание", "Дочерний процесс НЕ смог прочитать сообщение");

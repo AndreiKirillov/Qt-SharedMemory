@@ -2,11 +2,11 @@
 #define MYPROCESS_H
 
 #include <QProcess>
+#include <QSharedMemory>
+#include <QSystemSemaphore>
 #include <QDebug>
 #include <string>
 #include <memory>
-#include <thread>
-#include <chrono>
 
 #include "EventInterprocess.h"
 #include "libSharedMemory.h"     // созданная библиотека для разделяемой памяти
@@ -23,7 +23,8 @@ private:
     EventInterprocess _events_handler;
 
     // для работы с разделяемой памятью
-    LibSharedMemory _shared_memory;
+    QSharedMemory _shared_memory;
+    QSystemSemaphore _memory_blocker;
 public:
     MyProcess();
     ~MyProcess();
@@ -34,7 +35,7 @@ public:
     void read();
 
     bool sendEvent(EventType event);
-    bool sendMessage(std::string message);
+    bool sendMessage(const QString& message);
 };
 
 #endif // MYPROCESS_H
