@@ -54,10 +54,10 @@ StatusError MyEventSpecial::set()       // отправка события
 {
     if(_working_mode == WorkingMode::Sender)
     {
-        std::cout << "Trying to SEND: releasing"<<std::endl;
+        std::cout << "Trying to SEND: before releasing"<<std::endl;
         if(_event->release())   // освобождаем семафор, давая ждущему процессу его захватить
         {
-            std::cout << "Trying to SEND: acquiring"<<std::endl;
+            std::cout << "Trying to SEND: before acquiring"<<std::endl;
             if(_event->acquire())   // снова захватываем
             {
                 std::cout << "SEND was DONE"<<std::endl;
@@ -79,10 +79,10 @@ StatusError MyEventSpecial::wait()    // Ожидает наступление �
 {
     if(_working_mode == WorkingMode::Receiver)   // только для типа получатель
     {
-        std::cout << "Trying to WAIT: acquiring"<<std::endl;
+        std::cout << "Trying to WAIT: before acquiring"<<std::endl;
         if(_event->acquire())    // пытаемся получить ресурс
         {
-            std::cout << "Trying to WAIT: releasing"<<std::endl;
+            std::cout << "Trying to WAIT: before releasing"<<std::endl;
             if(_event->release())  // получение ресурса - это наступление события, затем освобождаем
             {
                 std::cout << "WAIT DONE. Event was received"<<std::endl;
