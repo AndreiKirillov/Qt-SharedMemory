@@ -2,39 +2,25 @@
 #define MYEVENTSPECIAL_H
 #include <QSystemSemaphore>
 #include <QSharedMemory>
-#include <iostream>
-#include <string>
-#include <memory>
-#include <thread>
-#include <chrono>
 
-enum class WorkingMode  // пока либо отправитель, либо приёмник, в двустороннем режиме чёт сложно сделать
-{                       // вдобавок отправитель может быть в единственном экземпляре, да и приёмник тоже
-    Sender, Receiver
-};
-
-enum class StatusError     // Типы возможных ошибок семафора
+enum class WorkingMode
 {
-    NoError, PermissionDenied, KeyError, AlreadyExists,
-    NotFound, OutOfResources, UnknownError
+    Sender, Receiver
 };
 
 class MyEventSpecial
 {
 private:
-    std::unique_ptr<QSystemSemaphore> _event;
-    std::string _event_name;
+    QSystemSemaphore _event;
 
     WorkingMode _working_mode;
 
-    StatusError translateError(QSystemSemaphore::SystemSemaphoreError error_code);
 public:
-    MyEventSpecial(const char* event_name, WorkingMode working_mode);
-    ~MyEventSpecial();
+    MyEventSpecial(const QString& event_name, WorkingMode working_mode = WorkingMode::Receiver);
 
-    StatusError set();
+    QSystemSemaphore::SystemSemaphoreError set();
 
-    StatusError wait();
+    QSystemSemaphore::SystemSemaphoreError wait();
 };
 
 
