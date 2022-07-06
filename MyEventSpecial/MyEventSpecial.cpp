@@ -57,15 +57,8 @@ StatusError MyEventSpecial::set()       // отправка события
         std::cout << "Trying to SEND: before releasing"<<std::endl;
         if(_event->release())   // освобождаем семафор, давая ждущему процессу его захватить
         {
-            std::cout << "Trying to SEND: before acquiring"<<std::endl;
-            //std::this_thread::sleep_for(std::chrono::microseconds(1));
-            if(_event->acquire())   // снова захватываем
-            {
                 std::cout << "SEND was DONE"<<std::endl;
                 return StatusError::NoError;
-            }
-            else
-                return translateError(_event->error());  // в случае неудачи возвращаем ошибку
         }
         else
         {
@@ -83,14 +76,8 @@ StatusError MyEventSpecial::wait()    // Ожидает наступление �
         std::cout << "Trying to WAIT: before acquiring"<<std::endl;
         if(_event->acquire())    // пытаемся получить ресурс
         {
-            std::cout << "Trying to WAIT: before releasing"<<std::endl;
-            if(_event->release())  // получение ресурса - это наступление события, затем освобождаем
-            {
                 std::cout << "WAIT DONE. Event was received"<<std::endl;
                 return StatusError::NoError;
-            }
-            else
-                return translateError(_event->error());
         }
         else
             return translateError(_event->error());
