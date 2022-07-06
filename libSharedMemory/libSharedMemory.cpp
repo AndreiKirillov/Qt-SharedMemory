@@ -1,15 +1,15 @@
 #include "libSharedMemory.h"
 
-LibSharedMemory::LibSharedMemory():_shared_memory("MyMemoryKey"), _semaphore("MySemaphoreKey",1)
+LibSharedMemory::LibSharedMemory():_shared_memory("MyMemoryKey"), _semaphore("MemoryBlockerKey",1)
 {
 }
 
 
-bool LibSharedMemory::writeToSharedMem(const char *message)
+bool LibSharedMemory::writeToSharedMem(const QString& message)
 {
     _semaphore.acquire();      // синхронизируем доступ
 
-    if(!_shared_memory.create(strlen(message) + sizeof(int) + 1)) // Создаём сегмент памяти нужного размера
+    if(!_shared_memory.create(message.size() + sizeof(int))) // Создаём сегмент памяти нужного размера
     {
         _semaphore.release();
         return false;
@@ -21,16 +21,17 @@ bool LibSharedMemory::writeToSharedMem(const char *message)
         return false;
     }
 
-    int message_size = strlen(message) + 1;
+    int message_size = message.size();
 
     memcpy(_shared_memory.data(), &message_size, sizeof(int));
-    memcpy(_shared_memory.data() + sizeof(int), message, message_size);
+    QByteArray message_buff = message.toLocal8Bit();
+    memcpy(_shared_memory.data() + sizeof(int), message_buff.data(), message_size);
 
     _semaphore.release();
     return true;
 }
 
-std::string LibSharedMemory::readFromSharedMem()
+QString LibSharedMemory::readFromSharedMem()
 {
     _semaphore.acquire();
 
@@ -43,15 +44,15 @@ std::string LibSharedMemory::readFromSharedMem()
     int message_size;
     memcpy(&message_size, _shared_memory.data(), sizeof(int));  // читаем размер сообщения
 
-    const char* message = new char[message_size];
-    memcpy(&message, _shared_memory.data() + sizeof(int), message_size);      // затем само сообщение
-    std::string str_message(message);
-    delete[] message;
+    char* message_buffer = new char[message_size];
+    memcpy(message_buffer, _shared_memory.data() + sizeof(int), message_size);
+    QString str_message(message_buffer);
+    delete[] message_buffer;
 
     _shared_memory.detach();                // отключаем процесс от памяти
     _semaphore.release();
 
-    return message;
+    return str_message;
 }
 
 bool LibSharedMemory::detachMemory()

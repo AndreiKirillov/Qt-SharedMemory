@@ -14,9 +14,9 @@ private:
 public:
     LibSharedMemory();
 
-    bool writeToSharedMem(const char* message);
+    bool writeToSharedMem(const QString& message);
 
-    std::string readFromSharedMem();
+    QString readFromSharedMem();
 
     bool detachMemory();
 };

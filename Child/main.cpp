@@ -29,6 +29,7 @@ QSharedMemory shared_memory("MyMemoryKey");
 QSystemSemaphore shared_mem_blocker("MemoryBlockerKey",1, QSystemSemaphore::Open);
 void message()
 {
+    std::cout << "Try to receive message" << std::endl;
     shared_mem_blocker.acquire();
 
     if(!shared_memory.attach(QSharedMemory::AccessMode::ReadOnly)) // присоединяемся к памяти
