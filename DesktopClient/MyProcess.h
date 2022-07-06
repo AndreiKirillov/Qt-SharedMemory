@@ -7,9 +7,6 @@
 #include <memory>
 #include <thread>
 #include <chrono>
-#include <boost/interprocess/sync/named_condition_any.hpp>
-#include <boost/interprocess/sync/named_mutex.hpp>
-#include <boost/interprocess/creation_tags.hpp>
 
 #include "EventInterprocess.h"
 #include "libSharedMemory.h"     // созданная библиотека для разделяемой памяти

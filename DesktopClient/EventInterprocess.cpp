@@ -3,8 +3,8 @@
 EventInterprocess::EventInterprocess():
     _start_event("start_event", WorkingMode::Sender),
     _stop_event("stop_event", WorkingMode::Sender),
-    _message_event("message_event", WorkingMode::Sender),
-    _confirm_event("confirm_event", WorkingMode::Receiver)
+    _message_event("message_event", WorkingMode::Sender)
+    //_confirm_event("confirm_event", WorkingMode::Receiver)
 {
 }
 
@@ -30,8 +30,8 @@ void EventInterprocess::sendEvent(EventType event)
 
 bool EventInterprocess::waitForConfirm()
 {
-    if(_confirm_event.wait() == StatusError::NoError)
-        return true;
-    else
-        return false;
+//    if(_confirm_event.wait() == StatusError::NoError)
+//        return true;
+//    else
+//        return false;
 }

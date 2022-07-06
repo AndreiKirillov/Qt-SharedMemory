@@ -4,7 +4,7 @@
 #include <QProcess>
 #include <string>
 #include <mutex>
-#include "MyEvent.h"
+#include "MyEventSpecial.h"
 
 enum class EventType
 {
@@ -15,11 +15,11 @@ enum class EventType
 class EventInterprocess
 {
 private:
-    MyEvent _start_event;
-    MyEvent _stop_event;
-    MyEvent _message_event;
+    MyEventSpecial _start_event;
+    MyEventSpecial _stop_event;
+    MyEventSpecial _message_event;
 
-    MyEvent _confirm_event;
+    //MyEvent _confirm_event;
 public:
     EventInterprocess();
     ~EventInterprocess();

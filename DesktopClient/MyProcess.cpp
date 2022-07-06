@@ -45,8 +45,8 @@ void MyProcess::read()
 bool MyProcess::sendEvent(EventType event)
 {
     _events_handler.sendEvent(event);
-
-    return _events_handler.waitForConfirm();
+    return true;
+    //return _events_handler.waitForConfirm();
 }
 
 bool MyProcess::sendMessage(std::string message)

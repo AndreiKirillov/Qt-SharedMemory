@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <thread>
+#include <chrono>
 
 enum class WorkingMode  // пока либо отправитель, либо приёмник, в двустороннем режиме чёт сложно сделать
 {                       // вдобавок отправитель может быть в единственном экземпляре, да и приёмник тоже

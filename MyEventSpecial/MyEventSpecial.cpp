@@ -58,6 +58,7 @@ StatusError MyEventSpecial::set()       // отправка события
         if(_event->release())   // освобождаем семафор, давая ждущему процессу его захватить
         {
             std::cout << "Trying to SEND: before acquiring"<<std::endl;
+            //std::this_thread::sleep_for(std::chrono::microseconds(1));
             if(_event->acquire())   // снова захватываем
             {
                 std::cout << "SEND was DONE"<<std::endl;

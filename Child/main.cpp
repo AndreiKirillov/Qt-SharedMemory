@@ -31,6 +31,10 @@ void stop()
 //QSystemSemaphore shared_mem_blocker("MySemaphoreKey",1);
 void message()
 {
+    std::cout<<"message function"<<std::endl;
+    for(int i=0;i<10;i++)
+        std::cout<<"work imitation"<<std::endl;
+    std::cout<<"message function FINISHED"<<std::endl;
 //    shared_mem_blocker.acquire();
 
 //    if(!shared_memory.attach(QSharedMemory::AccessMode::ReadOnly)) // присоединяемся к памяти
